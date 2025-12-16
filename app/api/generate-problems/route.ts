@@ -40,6 +40,10 @@ export async function POST() {
 ]`;
 
   try {
+    // Create AbortController for timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout
+
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
@@ -62,8 +66,11 @@ export async function POST() {
             maxOutputTokens: 8000,
           },
         }),
+        signal: controller.signal,
       }
     );
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -105,6 +112,15 @@ export async function POST() {
     return NextResponse.json({ problems });
   } catch (error) {
     console.error('Error generating problems:', error);
+
+    // Handle timeout errors
+    if (error instanceof Error && error.name === 'AbortError') {
+      return NextResponse.json(
+        { error: 'Request timeout - please try again' },
+        { status: 408 }
+      );
+    }
+
     return NextResponse.json(
       { error: 'Failed to generate problems' },
       { status: 500 }

@@ -51,6 +51,16 @@ export default function Home() {
     sessionStorage.setItem('judgements', JSON.stringify(judgements));
   }, [judgements]);
 
+  // Auto-update problems on first visit
+  useEffect(() => {
+    const hasLoadedBefore = sessionStorage.getItem('hasLoadedBefore');
+    if (!hasLoadedBefore) {
+      sessionStorage.setItem('hasLoadedBefore', 'true');
+      handleUpdateProblems();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleTimeout = useCallback(() => {
     alert('時間切れです！');
     setIsRunning(false);
@@ -77,8 +87,9 @@ export default function Home() {
     if (isUpdating) return;
 
     setIsUpdating(true);
+    let response: Response | undefined;
     try {
-      const response = await fetch('/api/generate-problems', {
+      response = await fetch('/api/generate-problems', {
         method: 'POST',
       });
 
@@ -105,7 +116,15 @@ export default function Home() {
       alert('問題を更新しました！');
     } catch (error) {
       console.error('Error updating problems:', error);
-      alert('更新できません');
+
+      // Check if it's a quota exceeded error
+      if (response && response.status === 429) {
+        alert('APIのクォータ制限に達しました。\n無料枠は1日20リクエストまでです。\nしばらく待ってから再度お試しください。');
+      } else if (response && response.status === 408) {
+        alert('リクエストがタイムアウトしました。\nもう一度お試しください。');
+      } else {
+        alert('更新できません。\nネットワークまたはAPIキーを確認してください。');
+      }
     } finally {
       setIsUpdating(false);
     }
@@ -202,8 +221,14 @@ export default function Home() {
             <button
               onClick={handleUpdateProblems}
               disabled={isUpdating}
-              className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
+              {isUpdating && (
+                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              )}
               {isUpdating ? '更新中...' : '問題の更新'}
             </button>
           </div>

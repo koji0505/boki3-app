@@ -24,6 +24,18 @@ export default function Problem({
     onAnswerChange({ ...answer, [field]: value });
   };
 
+  const handleAmountChange = (field: 'debitAmount' | 'creditAmount', value: string) => {
+    // Remove commas and non-numeric characters except digits
+    const numericValue = value.replace(/[^\d]/g, '');
+    onAnswerChange({ ...answer, [field]: numericValue });
+  };
+
+  const formatAmount = (value: string) => {
+    if (!value) return '';
+    // Add commas to the number
+    return Number(value).toLocaleString('ja-JP');
+  };
+
   return (
     <div className="border border-gray-300 p-4 mb-4 rounded">
       <h3 className="font-bold mb-2">問題{problem.id}</h3>
@@ -52,11 +64,11 @@ export default function Problem({
               onChange={(e) => handleChange('debitSymbol', e.target.value.toUpperCase())}
             />
             <input
-              type="number"
+              type="text"
               placeholder="金額"
               className="border border-gray-300 px-2 py-1 flex-1"
-              value={answer.debitAmount}
-              onChange={(e) => handleChange('debitAmount', e.target.value)}
+              value={formatAmount(answer.debitAmount)}
+              onChange={(e) => handleAmountChange('debitAmount', e.target.value)}
             />
           </div>
         </div>
@@ -71,11 +83,11 @@ export default function Problem({
               onChange={(e) => handleChange('creditSymbol', e.target.value.toUpperCase())}
             />
             <input
-              type="number"
+              type="text"
               placeholder="金額"
               className="border border-gray-300 px-2 py-1 flex-1"
-              value={answer.creditAmount}
-              onChange={(e) => handleChange('creditAmount', e.target.value)}
+              value={formatAmount(answer.creditAmount)}
+              onChange={(e) => handleAmountChange('creditAmount', e.target.value)}
             />
           </div>
         </div>
