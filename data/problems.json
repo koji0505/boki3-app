@@ -1,0 +1,257 @@
+[
+  {
+    "id": 1,
+    "question": "現金100,000円で商品を仕入れた。",
+    "accountOptions": [
+      { "symbol": "A", "name": "現金" },
+      { "symbol": "B", "name": "仕入" },
+      { "symbol": "C", "name": "売上" },
+      { "symbol": "D", "name": "買掛金" }
+    ],
+    "correctAnswer": {
+      "debitSymbol": "B",
+      "debitAmount": 100000,
+      "creditSymbol": "A",
+      "creditAmount": 100000
+    },
+    "explanation": "商品を仕入れたので「仕入」が増加（借方）、現金で支払ったので「現金」が減少（貸方）します。"
+  },
+  {
+    "id": 2,
+    "question": "商品200,000円を売り上げ、代金は掛けとした。",
+    "accountOptions": [
+      { "symbol": "A", "name": "現金" },
+      { "symbol": "B", "name": "売掛金" },
+      { "symbol": "C", "name": "売上" },
+      { "symbol": "D", "name": "買掛金" }
+    ],
+    "correctAnswer": {
+      "debitSymbol": "B",
+      "debitAmount": 200000,
+      "creditSymbol": "C",
+      "creditAmount": 200000
+    },
+    "explanation": "商品を売り上げたので「売上」が発生（貸方）、代金は掛けなので「売掛金」が増加（借方）します。"
+  },
+  {
+    "id": 3,
+    "question": "給料150,000円を現金で支払った。",
+    "accountOptions": [
+      { "symbol": "A", "name": "現金" },
+      { "symbol": "B", "name": "給料" },
+      { "symbol": "C", "name": "売上" },
+      { "symbol": "D", "name": "仕入" }
+    ],
+    "correctAnswer": {
+      "debitSymbol": "B",
+      "debitAmount": 150000,
+      "creditSymbol": "A",
+      "creditAmount": 150000
+    },
+    "explanation": "給料を支払ったので「給料」が発生（借方）、現金で支払ったので「現金」が減少（貸方）します。"
+  },
+  {
+    "id": 4,
+    "question": "借入金300,000円を現金で返済した。",
+    "accountOptions": [
+      { "symbol": "A", "name": "現金" },
+      { "symbol": "B", "name": "借入金" },
+      { "symbol": "C", "name": "貸付金" },
+      { "symbol": "D", "name": "資本金" }
+    ],
+    "correctAnswer": {
+      "debitSymbol": "B",
+      "debitAmount": 300000,
+      "creditSymbol": "A",
+      "creditAmount": 300000
+    },
+    "explanation": "借入金を返済したので「借入金」が減少（借方）、現金で支払ったので「現金」が減少（貸方）します。"
+  },
+  {
+    "id": 5,
+    "question": "売掛金180,000円を現金で回収した。",
+    "accountOptions": [
+      { "symbol": "A", "name": "現金" },
+      { "symbol": "B", "name": "売掛金" },
+      { "symbol": "C", "name": "買掛金" },
+      { "symbol": "D", "name": "売上" }
+    ],
+    "correctAnswer": {
+      "debitSymbol": "A",
+      "debitAmount": 180000,
+      "creditSymbol": "B",
+      "creditAmount": 180000
+    },
+    "explanation": "売掛金を回収したので「売掛金」が減少（貸方）、現金が増加したので「現金」が増加（借方）します。"
+  },
+  {
+    "id": 6,
+    "question": "買掛金250,000円を現金で支払った。",
+    "accountOptions": [
+      { "symbol": "A", "name": "現金" },
+      { "symbol": "B", "name": "買掛金" },
+      { "symbol": "C", "name": "売掛金" },
+      { "symbol": "D", "name": "仕入" }
+    ],
+    "correctAnswer": {
+      "debitSymbol": "B",
+      "debitAmount": 250000,
+      "creditSymbol": "A",
+      "creditAmount": 250000
+    },
+    "explanation": "買掛金を支払ったので「買掛金」が減少（借方）、現金で支払ったので「現金」が減少（貸方）します。"
+  },
+  {
+    "id": 7,
+    "question": "備品80,000円を現金で購入した。",
+    "accountOptions": [
+      { "symbol": "A", "name": "現金" },
+      { "symbol": "B", "name": "備品" },
+      { "symbol": "C", "name": "消耗品費" },
+      { "symbol": "D", "name": "仕入" }
+    ],
+    "correctAnswer": {
+      "debitSymbol": "B",
+      "debitAmount": 80000,
+      "creditSymbol": "A",
+      "creditAmount": 80000
+    },
+    "explanation": "備品を購入したので「備品」が増加（借方）、現金で支払ったので「現金」が減少（貸方）します。"
+  },
+  {
+    "id": 8,
+    "question": "水道光熱費12,000円を現金で支払った。",
+    "accountOptions": [
+      { "symbol": "A", "name": "現金" },
+      { "symbol": "B", "name": "水道光熱費" },
+      { "symbol": "C", "name": "通信費" },
+      { "symbol": "D", "name": "消耗品費" }
+    ],
+    "correctAnswer": {
+      "debitSymbol": "B",
+      "debitAmount": 12000,
+      "creditSymbol": "A",
+      "creditAmount": 12000
+    },
+    "explanation": "水道光熱費を支払ったので「水道光熱費」が発生（借方）、現金で支払ったので「現金」が減少（貸方）します。"
+  },
+  {
+    "id": 9,
+    "question": "商品を120,000円で売り上げ、現金で受け取った。",
+    "accountOptions": [
+      { "symbol": "A", "name": "現金" },
+      { "symbol": "B", "name": "売上" },
+      { "symbol": "C", "name": "売掛金" },
+      { "symbol": "D", "name": "仕入" }
+    ],
+    "correctAnswer": {
+      "debitSymbol": "A",
+      "debitAmount": 120000,
+      "creditSymbol": "B",
+      "creditAmount": 120000
+    },
+    "explanation": "商品を売り上げたので「売上」が発生（貸方）、現金で受け取ったので「現金」が増加（借方）します。"
+  },
+  {
+    "id": 10,
+    "question": "旅費交通費5,000円を現金で支払った。",
+    "accountOptions": [
+      { "symbol": "A", "name": "現金" },
+      { "symbol": "B", "name": "旅費交通費" },
+      { "symbol": "C", "name": "通信費" },
+      { "symbol": "D", "name": "消耗品費" }
+    ],
+    "correctAnswer": {
+      "debitSymbol": "B",
+      "debitAmount": 5000,
+      "creditSymbol": "A",
+      "creditAmount": 5000
+    },
+    "explanation": "旅費交通費を支払ったので「旅費交通費」が発生（借方）、現金で支払ったので「現金」が減少（貸方）します。"
+  },
+  {
+    "id": 11,
+    "question": "消耗品費8,000円を現金で購入した。",
+    "accountOptions": [
+      { "symbol": "A", "name": "現金" },
+      { "symbol": "B", "name": "消耗品費" },
+      { "symbol": "C", "name": "備品" },
+      { "symbol": "D", "name": "仕入" }
+    ],
+    "correctAnswer": {
+      "debitSymbol": "B",
+      "debitAmount": 8000,
+      "creditSymbol": "A",
+      "creditAmount": 8000
+    },
+    "explanation": "消耗品を購入したので「消耗品費」が発生（借方）、現金で支払ったので「現金」が減少（貸方）します。"
+  },
+  {
+    "id": 12,
+    "question": "通信費3,000円を現金で支払った。",
+    "accountOptions": [
+      { "symbol": "A", "name": "現金" },
+      { "symbol": "B", "name": "通信費" },
+      { "symbol": "C", "name": "水道光熱費" },
+      { "symbol": "D", "name": "旅費交通費" }
+    ],
+    "correctAnswer": {
+      "debitSymbol": "B",
+      "debitAmount": 3000,
+      "creditSymbol": "A",
+      "creditAmount": 3000
+    },
+    "explanation": "通信費を支払ったので「通信費」が発生（借方）、現金で支払ったので「現金」が減少（貸方）します。"
+  },
+  {
+    "id": 13,
+    "question": "貸付金50,000円を現金で貸し付けた。",
+    "accountOptions": [
+      { "symbol": "A", "name": "現金" },
+      { "symbol": "B", "name": "貸付金" },
+      { "symbol": "C", "name": "借入金" },
+      { "symbol": "D", "name": "売掛金" }
+    ],
+    "correctAnswer": {
+      "debitSymbol": "B",
+      "debitAmount": 50000,
+      "creditSymbol": "A",
+      "creditAmount": 50000
+    },
+    "explanation": "現金を貸し付けたので「貸付金」が増加（借方）、現金が減少したので「現金」が減少（貸方）します。"
+  },
+  {
+    "id": 14,
+    "question": "広告宣伝費15,000円を現金で支払った。",
+    "accountOptions": [
+      { "symbol": "A", "name": "現金" },
+      { "symbol": "B", "name": "広告宣伝費" },
+      { "symbol": "C", "name": "通信費" },
+      { "symbol": "D", "name": "消耗品費" }
+    ],
+    "correctAnswer": {
+      "debitSymbol": "B",
+      "debitAmount": 15000,
+      "creditSymbol": "A",
+      "creditAmount": 15000
+    },
+    "explanation": "広告宣伝費を支払ったので「広告宣伝費」が発生（借方）、現金で支払ったので「現金」が減少（貸方）します。"
+  },
+  {
+    "id": 15,
+    "question": "受取手数料20,000円を現金で受け取った。",
+    "accountOptions": [
+      { "symbol": "A", "name": "現金" },
+      { "symbol": "B", "name": "受取手数料" },
+      { "symbol": "C", "name": "売上" },
+      { "symbol": "D", "name": "売掛金" }
+    ],
+    "correctAnswer": {
+      "debitSymbol": "A",
+      "debitAmount": 20000,
+      "creditSymbol": "B",
+      "creditAmount": 20000
+    },
+    "explanation": "受取手数料が発生したので「受取手数料」が発生（貸方）、現金で受け取ったので「現金」が増加（借方）します。"
+  }
+]

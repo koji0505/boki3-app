@@ -1,0 +1,222 @@
+'use client';
+
+import { useState, useCallback, useEffect } from 'react';
+import Timer from '@/components/Timer';
+import Problem from '@/components/Problem';
+import { Problem as ProblemType, UserAnswer, JudgementResult } from '@/types';
+import { judgeAnswer } from '@/lib/judgement';
+import problemsData from '@/data/problems.json';
+
+export default function Home() {
+  const [timeLimit, setTimeLimit] = useState(15);
+  const [isRunning, setIsRunning] = useState(false);
+  const [timerKey, setTimerKey] = useState(0);
+  const [problems, setProblems] = useState<ProblemType[]>(problemsData);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [answers, setAnswers] = useState<UserAnswer[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = sessionStorage.getItem('answers');
+      if (saved) return JSON.parse(saved);
+    }
+    return problemsData.map(() => ({
+      debitSymbol: '',
+      debitAmount: '',
+      creditSymbol: '',
+      creditAmount: '',
+    }));
+  });
+  const [judgements, setJudgements] = useState<JudgementResult[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = sessionStorage.getItem('judgements');
+      if (saved) return JSON.parse(saved);
+    }
+    return problemsData.map(() => null);
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem('answers', JSON.stringify(answers));
+  }, [answers]);
+
+  useEffect(() => {
+    sessionStorage.setItem('judgements', JSON.stringify(judgements));
+  }, [judgements]);
+
+  const handleTimeout = useCallback(() => {
+    alert('時間切れです！');
+    setIsRunning(false);
+  }, []);
+
+  const handleTimerReset = () => {
+    setIsRunning(false);
+    setTimerKey((prev) => prev + 1);
+  };
+
+  const handleClearAnswers = () => {
+    setAnswers(
+      problems.map(() => ({
+        debitSymbol: '',
+        debitAmount: '',
+        creditSymbol: '',
+        creditAmount: '',
+      }))
+    );
+    setJudgements(problems.map(() => null));
+  };
+
+  const handleUpdateProblems = async () => {
+    if (isUpdating) return;
+
+    setIsUpdating(true);
+    try {
+      const response = await fetch('/api/generate-problems', {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error('API request failed');
+      }
+
+      const data = await response.json();
+
+      if (data.error || !data.problems) {
+        throw new Error('Failed to generate problems');
+      }
+
+      setProblems(data.problems);
+      setAnswers(
+        data.problems.map(() => ({
+          debitSymbol: '',
+          debitAmount: '',
+          creditSymbol: '',
+          creditAmount: '',
+        }))
+      );
+      setJudgements(data.problems.map(() => null));
+      alert('問題を更新しました！');
+    } catch (error) {
+      console.error('Error updating problems:', error);
+      alert('更新できません');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleAnswerChange = (index: number, answer: UserAnswer) => {
+    const newAnswers = [...answers];
+    newAnswers[index] = answer;
+    setAnswers(newAnswers);
+  };
+
+  const handleJudgeOne = (index: number) => {
+    const newJudgements = [...judgements];
+    newJudgements[index] = judgeAnswer(answers[index], problems[index].correctAnswer);
+    setJudgements(newJudgements);
+  };
+
+  const handleJudgeAll = () => {
+    const newJudgements = problems.map((problem, index) =>
+      judgeAnswer(answers[index], problem.correctAnswer)
+    );
+    setJudgements(newJudgements);
+
+    const correctCount = newJudgements.filter((j) => j === 'correct').length;
+    alert(`判定完了！ ${correctCount} / ${problems.length} 問正解`);
+  };
+
+  return (
+    <main className="min-h-screen bg-gray-50">
+      <div className="flex">
+        {/* Fixed Sidebar */}
+        <aside className="w-80 bg-white border-r border-gray-300 fixed h-screen p-6 overflow-y-auto">
+          <h2 className="text-xl font-bold mb-6">タイマー・判定</h2>
+
+          <div className="mb-6">
+            <label className="flex items-center gap-2 mb-3">
+              制限時間（分）:
+              <input
+                type="number"
+                value={timeLimit}
+                onChange={(e) => setTimeLimit(Number(e.target.value))}
+                className="border border-gray-300 px-3 py-1 w-20 rounded"
+                disabled={isRunning}
+              />
+            </label>
+
+            <div className="flex gap-2 mb-4">
+              <button
+                onClick={() => setIsRunning(true)}
+                className="px-4 py-2 rounded font-semibold flex-1 bg-green-500 hover:bg-green-600 text-white"
+                disabled={isRunning}
+              >
+                Start
+              </button>
+              <button
+                onClick={() => setIsRunning(false)}
+                className="px-4 py-2 rounded font-semibold flex-1 bg-yellow-500 hover:bg-yellow-600 text-white"
+                disabled={!isRunning}
+              >
+                Stop
+              </button>
+              <button
+                onClick={handleTimerReset}
+                className="px-4 py-2 rounded font-semibold flex-1 bg-gray-500 hover:bg-gray-600 text-white"
+              >
+                Reset
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="font-semibold">残り時間:</span>
+              <Timer
+                key={timerKey}
+                isRunning={isRunning}
+                timeLimit={timeLimit}
+                onTimeout={handleTimeout}
+              />
+            </div>
+          </div>
+
+          <div className="border-t border-gray-300 pt-6 space-y-3">
+            <button
+              onClick={handleJudgeAll}
+              className="w-full bg-purple-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-purple-700"
+            >
+              全問題を判定
+            </button>
+            <button
+              onClick={handleClearAnswers}
+              className="w-full bg-red-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-red-600"
+            >
+              解答クリア
+            </button>
+            <button
+              onClick={handleUpdateProblems}
+              disabled={isUpdating}
+              className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              {isUpdating ? '更新中...' : '問題の更新'}
+            </button>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <div className="ml-80 flex-1 p-8">
+          <h1 className="text-3xl font-bold mb-6">日商簿記3級 仕訳問題</h1>
+
+          <div className="mb-6">
+            {problems.map((problem, index) => (
+              <Problem
+                key={problem.id}
+                problem={problem}
+                answer={answers[index]}
+                judgement={judgements[index]}
+                onAnswerChange={(answer) => handleAnswerChange(index, answer)}
+                onJudge={() => handleJudgeOne(index)}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}

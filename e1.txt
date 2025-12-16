@@ -1,0 +1,31 @@
+npm run dev で下記の警告 
+
+Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\c_works\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+
+
+
+
+解答ボタンを押すと下記エラー
+
+console Error
+
+
+A param property was accessed directly with `params.id`. `params` is now a Promise and should be unwrapped with `React.use()` before accessing properties of the underlying params object. In this version of Next.js direct access to param properties is still supported to facilitate migration but in a future version you will be required to unwrap `params` with `React.use()`.
+
+app\answer\[id]\page.tsx (9:37) @ AnswerPage
+
+
+   7 | export default function AnswerPage({ params }: { params: { id: string } }) {
+   8 |   const router = useRouter();
+>  9 |   const problemId = parseInt(params.id, 10);
+     |                                     ^
+  10 |   const problem = (problemsData as Problem[]).find((p) => p.id === problemId);
+  11 |
+  12 |   if (!problem) {
+Call Stack
+18
+
+Show 17 ignore-listed frame(s)
+AnswerPage
