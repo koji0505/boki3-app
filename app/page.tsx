@@ -11,7 +11,13 @@ export default function Home() {
   const [timeLimit, setTimeLimit] = useState(15);
   const [isRunning, setIsRunning] = useState(false);
   const [timerKey, setTimerKey] = useState(0);
-  const [problems, setProblems] = useState<ProblemType[]>(problemsData);
+  const [problems, setProblems] = useState<ProblemType[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = sessionStorage.getItem('problems');
+      if (saved) return JSON.parse(saved);
+    }
+    return problemsData;
+  });
   const [isUpdating, setIsUpdating] = useState(false);
   const [answers, setAnswers] = useState<UserAnswer[]>(() => {
     if (typeof window !== 'undefined') {
@@ -32,6 +38,10 @@ export default function Home() {
     }
     return problemsData.map(() => null);
   });
+
+  useEffect(() => {
+    sessionStorage.setItem('problems', JSON.stringify(problems));
+  }, [problems]);
 
   useEffect(() => {
     sessionStorage.setItem('answers', JSON.stringify(answers));

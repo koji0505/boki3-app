@@ -9,7 +9,17 @@ export default function AnswerPage({ params }: { params: Promise<{ id: string }>
   const router = useRouter();
   const { id } = use(params);
   const problemId = parseInt(id, 10);
-  const problem = (problemsData as Problem[]).find((p) => p.id === problemId);
+
+  // Read from sessionStorage first, fall back to problemsData
+  let problems: Problem[] = problemsData as Problem[];
+  if (typeof window !== 'undefined') {
+    const saved = sessionStorage.getItem('problems');
+    if (saved) {
+      problems = JSON.parse(saved);
+    }
+  }
+
+  const problem = problems.find((p) => p.id === problemId);
 
   if (!problem) {
     return (
