@@ -19,6 +19,7 @@ export default function Home() {
     return problemsData;
   });
   const [isUpdating, setIsUpdating] = useState(false);
+  const [aiProvider, setAiProvider] = useState<'groq' | 'gemini'>('groq');
   const [answers, setAnswers] = useState<UserAnswer[]>(() => {
     if (typeof window !== 'undefined') {
       const saved = sessionStorage.getItem('answers');
@@ -91,6 +92,10 @@ export default function Home() {
     try {
       response = await fetch('/api/generate-problems', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ provider: aiProvider }),
       });
 
       if (!response.ok) {
@@ -233,6 +238,17 @@ export default function Home() {
               )}
               {isUpdating ? '更新中...' : '問題の更新'}
             </button>
+            <div className="mt-3">
+              <label className="block text-sm font-semibold mb-2">AIプロバイダー:</label>
+              <select
+                value={aiProvider}
+                onChange={(e) => setAiProvider(e.target.value as 'groq' | 'gemini')}
+                className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="groq">Groq (推奨・無料)</option>
+                <option value="gemini">Gemini</option>
+              </select>
+            </div>
           </div>
         </aside>
 
