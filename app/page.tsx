@@ -117,9 +117,11 @@ export default function Home() {
     } catch (error) {
       console.error('Error updating problems:', error);
 
-      // Check if it's a quota exceeded error
+      // Check for specific error types
       if (response && response.status === 429) {
         alert('APIのクォータ制限に達しました。\n無料枠は1日20リクエストまでです。\nしばらく待ってから再度お試しください。');
+      } else if (response && response.status === 503) {
+        alert('Gemini APIサーバーが混雑しています。\n数分待ってから再度お試しください。');
       } else if (response && response.status === 408) {
         alert('リクエストがタイムアウトしました。\nもう一度お試しください。');
       } else {
