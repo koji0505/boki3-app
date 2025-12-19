@@ -19,7 +19,8 @@ export default function Home() {
     return problemsData;
   });
   const [isUpdating, setIsUpdating] = useState(false);
-  const [aiProvider, setAiProvider] = useState<'groq' | 'gemini'>('groq');
+  const [aiProvider, setAiProvider] = useState<'groq' | 'gemini' | 'claude'>('claude');
+  const [maxRetries, setMaxRetries] = useState(3);
   const [answers, setAnswers] = useState<UserAnswer[]>(() => {
     if (typeof window !== 'undefined') {
       const saved = sessionStorage.getItem('answers');
@@ -95,7 +96,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ provider: aiProvider }),
+        body: JSON.stringify({ provider: aiProvider, maxRetries }),
       });
 
       if (!response.ok) {
@@ -118,12 +119,23 @@ export default function Home() {
         }))
       );
       setJudgements(data.problems.map(() => null));
-      alert('問題を更新しました！');
+
+      // Check if this is a partial success
+      if (data.partial) {
+        alert(`${data.message}\n\n取得できなかった問題番号: ${data.invalidProblems.join(', ')}`);
+      } else {
+        alert('問題を更新しました！');
+      }
     } catch (error) {
       console.error('Error updating problems:', error);
 
       // Check for specific error types
-      if (response && response.status === 429) {
+      if (response && response.status === 422) {
+        // Validation error - AI generated invalid problems
+        const errorData = await response.json().catch(() => ({}));
+        const message = errorData.message || 'AIが生成した問題に不備がありました。';
+        alert(`${message}\n\n別のAIプロバイダーを試すか、もう一度「問題の更新」をクリックしてください。`);
+      } else if (response && response.status === 429) {
         alert('APIのクォータ制限に達しました。\n無料枠は1日20リクエストまでです。\nしばらく待ってから再度お試しください。');
       } else if (response && response.status === 503) {
         alert('Gemini APIサーバーが混雑しています。\n数分待ってから再度お試しください。');
@@ -242,12 +254,27 @@ export default function Home() {
               <label className="block text-sm font-semibold mb-2">AIプロバイダー:</label>
               <select
                 value={aiProvider}
-                onChange={(e) => setAiProvider(e.target.value as 'groq' | 'gemini')}
+                onChange={(e) => setAiProvider(e.target.value as 'groq' | 'gemini' | 'claude')}
                 className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="groq">Groq (推奨・無料)</option>
-                <option value="gemini">Gemini</option>
+                <option value="claude">Claude (推奨・高品質)</option>
+                <option value="groq">Groq (無料)</option>
+                <option value="gemini">Gemini (無料)</option>
               </select>
+            </div>
+            <div className="mt-3">
+              <label className="block text-sm font-semibold mb-2">リトライ回数:</label>
+              <input
+                type="number"
+                min="1"
+                max="10"
+                value={maxRetries}
+                onChange={(e) => setMaxRetries(Number(e.target.value))}
+                className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                1〜10回（推奨: 3〜5回）
+              </p>
             </div>
           </div>
         </aside>
