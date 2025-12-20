@@ -37,3 +37,4 @@ next-env.d.ts
 *.jpg
 *.png
 .claude/
+photothumb.db
